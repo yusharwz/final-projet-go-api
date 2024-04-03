@@ -10,7 +10,7 @@ import (
 )
 
 func AddTransaksi(c *gin.Context) {
-	// Mulai transaksi database
+
 	tx, err := db.Begin()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -18,7 +18,7 @@ func AddTransaksi(c *gin.Context) {
 	}
 	defer tx.Rollback()
 
-	var transaksi entity.Transaksi
+	var transaksi entity.TransaksiAndDetail
 	if err := c.ShouldBindJSON(&transaksi); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "gagal sinkron data transaksi"})
 		return
@@ -38,10 +38,8 @@ func AddTransaksi(c *gin.Context) {
 	transaksi.Id = transaksiId
 	transaksi.TanggalMasuk = tanggalMasuk
 
-	// Inisialisasi detailTransaksiId di awal
 	var detailTransaksiId int
 
-	// Ambil data detail transaksi dari JSON yang diterima
 	for i, detail := range transaksi.DetailTransaksi {
 		err = tx.QueryRow("INSERT INTO detail_transaksi (id_transaksi, id_layanan, quantity) VALUES ($1, $2, $3) RETURNING id", transaksiId, detail.IdLayanan, detail.Quantity).Scan(&detailTransaksiId)
 		if err != nil {
@@ -49,7 +47,6 @@ func AddTransaksi(c *gin.Context) {
 			return
 		}
 
-		// Atur nilai IdTransaksi dan Id
 		transaksi.DetailTransaksi[i].IdTransaksi = transaksiId
 		transaksi.DetailTransaksi[i].Id = detailTransaksiId
 	}
@@ -58,7 +55,6 @@ func AddTransaksi(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	// Response dengan nilai transaksi yang telah di-update
 	c.JSON(http.StatusCreated, gin.H{"transaksi": transaksi})
 }
 
@@ -68,32 +64,67 @@ func ViewTransaction(c *gin.Context) {
 	var rows *sql.Rows
 	var err error
 
-	query := "SELECT * FROM transaksi ORDER BY id ASC"
+	query := `SELECT 
+	mst_pelanggan.nama_pelanggan, 
+	layanan.nama_layanan, 
+	detail_transaksi.quantity, 
+	mst_pegawai.nama_pegawai, 
+	transaksi.tanggal_masuk, 
+	layanan.harga * detail_transaksi.quantity AS total_harga 
+FROM 
+	transaksi 
+JOIN 
+	mst_pelanggan ON transaksi.id_pelanggan = mst_pelanggan.id 
+JOIN 
+	detail_transaksi ON transaksi.id = detail_transaksi.id_transaksi 
+JOIN 
+	layanan ON detail_transaksi.id_layanan = layanan.id 
+JOIN 
+	mst_pegawai ON transaksi.id_pegawai = mst_pegawai.id`
 
 	if searchId != "" {
-		query = "SELECT * FROM transaksi WHERE id = $1 ORDER BY id ASC;"
+		query = `SELECT 
+		mst_pelanggan.nama_pelanggan, 
+		layanan.nama_layanan, 
+		detail_transaksi.quantity, 
+		mst_pegawai.nama_pegawai, 
+		transaksi.tanggal_masuk, 
+		layanan.harga * detail_transaksi.quantity AS total_harga 
+	FROM 
+		transaksi 
+	JOIN 
+		mst_pelanggan ON transaksi.id_pelanggan = mst_pelanggan.id 
+	JOIN 
+		detail_transaksi ON transaksi.id = detail_transaksi.id_transaksi 
+	JOIN 
+		layanan ON detail_transaksi.id_layanan = layanan.id 
+	JOIN 
+		mst_pegawai ON transaksi.id_pegawai = mst_pegawai.id WHERE transaksi.id = $1;`
 		rows, err = db.Query(query, searchId)
 	} else {
 		rows, err = db.Query(query)
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "transaksi dengan id tersebut tidak ditemukan"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "transaksi dengan id tersebut tidak ditemukan"})
 		return
 	}
 	defer rows.Close()
 
-	var transactions []entity.Transaksi
+	var totalPembayaran int
+	var transactionDetails []entity.TransactionDetail
 	for rows.Next() {
-		var transaction entity.Transaksi
-		err = rows.Scan(&transaction.Id, &transaction.IdPelanggan, &transaction.IdPegawai, &transaction.TanggalMasuk, &transaction.TanggalKeluar, &transaction.StatusPembayaran)
+		var detail entity.TransactionDetail
+		err = rows.Scan(&detail.NamaPelanggan, &detail.NamaLayanan, &detail.Quantity, &detail.NamaPegawai, &detail.TanggalMasuk, &detail.Harga)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar transaksi"})
 			return
 		}
-		transactions = append(transactions, transaction)
+		transactionDetails = append(transactionDetails, detail)
+		totalPembayaran += detail.Harga
 	}
-	if len(transactions) > 0 {
-		c.JSON(http.StatusOK, gin.H{"Transaksi": transactions})
+
+	if len(transactionDetails) > 0 {
+		c.JSON(http.StatusOK, gin.H{"All Transaksi": transactionDetails})
 	} else {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Transaksi dengan id tersebut tidak ditemukan"})
 	}
@@ -258,7 +289,7 @@ func ViewTransactionByTransactionID(c *gin.Context) {
 	}
 
 	if len(transactionDetails) > 0 {
-		c.JSON(http.StatusOK, gin.H{"Detail Transaksi": transactionDetails, "Total Pembayaran": totalPembayaran})
+		c.JSON(http.StatusOK, gin.H{"Detail Transaksi": transactionDetails})
 	} else {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Transaksi dengan ID tersebut tidak ditemukan"})
 	}

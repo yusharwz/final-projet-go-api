@@ -24,6 +24,15 @@ type Transaksi struct {
 	TanggalMasuk     string
 	TanggalKeluar    string
 	StatusPembayaran string
+}
+
+type TransaksiAndDetail struct {
+	Id               int
+	IdPelanggan      int
+	IdPegawai        int
+	TanggalMasuk     string
+	TanggalKeluar    string
+	StatusPembayaran string
 	DetailTransaksi  []DetailTransaction
 }
 

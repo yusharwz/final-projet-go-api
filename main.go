@@ -30,19 +30,19 @@ func main() {
 
 	groupEmployess := router.Group("/api/employees")
 	{
-		// Menampilkan semua pelanggan
+		// Menampilkan semua pegawai
 		groupEmployess.GET("/", handlers.ViewDataPegawai)
 
-		// Menampilkan pelanggan bedasarkan id
-		groupEmployess.GET("/:id", handlers.ViewDataPegawaiById)
+		// Menampilkan pegawai bedasarkan id
+		groupEmployess.GET("/search/:id", handlers.ViewDataPegawaiById)
 
-		// Mendaftarkan pelanggan baru
+		// Mendaftarkan pegawai baru
 		groupEmployess.POST("/add", handlers.AddPegawai)
 
-		// Update data pelanggan
+		// Update data pegawai
 		groupEmployess.PUT("/update/:id", handlers.UpdatePegawai)
 
-		// Hapus data pelanggan
+		// Hapus data pegawai
 		groupEmployess.DELETE("/delete/:id", handlers.DeletePegawai)
 	}
 

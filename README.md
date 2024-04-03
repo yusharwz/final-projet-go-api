@@ -1,34 +1,5 @@
 # Aplikasi Enigma Laundry
 
-### Deskripsi
-
-Setelah menyelesaikan pembelajaran tentang Go API, Anda ditugaskan oleh manajemen Enigma Laundry (EL) untuk membuat sebuah aplikasi sederhana berbasis API untuk mencatat transaksi di tokonya.
-
-![logo](./asset/Enigma-Laundry.png)
-
-Fitur-fitur yang diminta oleh manajemen EL adalah:
-
-1.  Struktur/Design Database yang memenuhi kaidah normalisasi berdasarkan nota dibawah ini dengan kriteria sbb :
-
-        - Hasil design dalam bentuk file Script DDL Postgre SQL
-        - Design database minimal memiliki 2 tabel master dan 1 tabel transaksi
-        - Sediakan sample data dalam bentuk Script DML Postgre SQL
-
-2.  Aplikasi berbasis API menggunakan bahasa pemrograman Golang dengan kriteria sbb :
-
-        - Aplikasi memiliki fitur untuk melakukan GET, POST, PUT, dan DELETE pada tabel master
-          1. Manajemen Customer
-          2. Manajemen Produk
-          3. Manajemen Employee
-        - Aplikasi memiliki fitur untuk melakukan GET dan POST pada table Transaksi
-          1. Manajemen Transaksi
-        - Setiap fitur master wajib memiliki minimal 2 jenis validasi yang berbeda
-        - Setiap transaksi master wajib memiliki minimal 4 jenis validasi yang berbeda
-
-3.  Dokumentasi cara menjalankan aplikasi dan penggunaan aplikasi dalam bentuk readme.md atau dokumen ektensi word atau pdf
-
-- - -
-
 ## API Spec
 
 ### Customer API
@@ -38,17 +9,12 @@ Fitur-fitur yang diminta oleh manajemen EL adalah:
 Request :
 
 - Method : `POST`
-- Endpoint : `/customers`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
+- Endpoint : `/customers/add`
 
 ```json
 {
-  "name": "string",
-  "phoneNumber": "string",
-  "address": "string"
+  "Name": "string",
+  "NoHp": "string"
 }
 ```
 
@@ -59,12 +25,10 @@ Response :
 
 ```json
 {
-  "message": "string",
   "data": {
     "id": "string",
-    "name": "string",
-    "phoneNumber": "string",
-    "address": "string"
+    "Name": "string",
+    "NoHp": "string"
   }
 }
 ```
@@ -87,10 +51,9 @@ Response :
 {
   "message": "string",
   "data": {
-    "id": "string",
-    "name": "string",
-    "phoneNumber": "string",
-    "address": "string"
+    "Id": "string",
+    "Name": "string",
+    "NoHp": "string"
   }
 }
 ```
@@ -100,7 +63,7 @@ Response :
 Request :
 
 - Method : PUT
-- Endpoint : `/customers/:id`
+- Endpoint : `/customers/update/:id`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -108,9 +71,8 @@ Request :
 
 ```json
 {
-  "name": "string",
-  "phoneNumber": "string",
-  "address": "string"
+  "Name": "string",
+  "NoHp": "string"
 }
 ```
 
@@ -121,12 +83,10 @@ Response :
 
 ```json
 {
-  "message": "string",
-  "data": {
-    "id": "string",
-    "name": "string",
-    "phoneNumber": "string",
-    "address": "string"
+ {
+    "Id": "string",
+    "Name": "string",
+    "NoHp": "string"
   }
 }
 ```
@@ -136,165 +96,7 @@ Response :
 Request :
 
 - Method : DELETE
-- Endpoint : `/customers/:id`
-- Header :
-  - Accept : application/json
-- Body :
-
-Response :
-
-- Status : 200 OK
-- Body :
-
-```json
-{
-  "message": "string",
-  "data": "OK"
-}
-```
-
-### Product API
-
-#### Create Product
-
-Request :
-
-- Method : POST
-- Endpoint : `/products`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-
-```json
-{
-	"name": "string",
-  "price": int,
-  "unit": "string" (satuan product,cth: Buah atau Kg)
-}
-```
-
-Response :
-
-- Status Code: 201 Created
-- Body:
-
-```json
-{
-	"message": "string",
-	"data": {
-		"id": "string",
-		"name": "string",
-		"price": int,
-		"unit": "string" (satuan product,cth: Buah atau Kg)
-	}
-}
-```
-
-#### List Product
-
-Request :
-
-- Method : GET
-- Endpoint : `/products`
-  - Header :
-  - Accept : application/json
-- Query Param :
-  - productName : string `optional`,
-
-Response :
-
-- Status Code : 200 OK
-- Body:
-
-```json
-{
-	"message": "string",
-	"data": [
-		{
-			"id": "string",
-			"name": "string",
-			"price": int,
-			"unit": "string" (satuan product,cth: Buah atau Kg)
-		},
-		{
-			"id": "string",
-			"name": "string",
-			"price": int,
-			"unit": "string" (satuan product,cth: Buah atau Kg)
-		}
-	]
-}
-```
-
-#### Product By Id
-
-Request :
-
-- Method : GET
-- Endpoint : `/products/:id`
-- Header :
-  - Accept : application/json
-
-Response :
-
-- Status Code: 200 OK
-- Body :
-
-```json
-{
-	"message": "string",
-	"data": {
-		"id": "string",
-		"name": "string",
-		"price": int,
-		"unit": "string" (satuan product,cth: Buah atau Kg)
-	}
-}
-```
-
-#### Update Product
-
-Request :
-
-- Method : PUT
-- Endpoint : `/products/:id`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-
-```json
-{
-	"name": "string",
-	"price": int,
-	"unit": "string" (satuan product,cth: Buah atau Kg)
-}
-```
-
-Response :
-
-- Status Code: 200 OK
-- Body :
-
-```json
-{
-	"message": "string",
-	"data": {
-		"id": "string",
-		"name": "string",
-		"price": int,
-		"unit": "string" (satuan product,cth: Buah atau Kg)
-	}
-}
-```
-
-#### Delete Product
-
-Request :
-
-- Method : DELETE
-- Endpoint : `/products/:id`
+- Endpoint : `/customers/delete/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -326,18 +128,18 @@ Request :
 
 ```json
 {
-	"billDate": "string",
-	"entryDate": "string",
-	"finishDate": "string",
-	"employeeId": "string",
-	"customerId": "string",
-	"billDetails": [
-		{
-			"productId": "string",
-			"qty": int
-		}
-	]
+  "IdPelanggan": int,
+  "IdPegawai":  int,
+  "TanggalKeluar": "stirng",
+  "StatusPembayaran": "string",
+  "DetailTransaksi": [
+    {
+      "IdLayanan": int,
+      "Quantity": int
+    }
+  ]
 }
+
 ```
 
 Request :
@@ -347,24 +149,22 @@ Request :
 
 ```json
 {
-	"message": "string",
-	"data":  {
-		"id":  "string",
-		"billDate":  "string",
-		"entryDate":  "string",
-		"finishDate":  "string",
-		"employeeId":  "string",
-		"customerId":  "string",
-		"billDetails":  [
-			{
-				"id":	"string",
-				"billId":  "string",
-				"productId":  "string",
-				"productPrice": int,
-				"qty": int
-			}
-		]
-	}
+    "transaksi": {
+        "Id": int,
+        "IdPelanggan": int,
+        "IdPegawai": int,
+        "TanggalMasuk": "string",
+        "TanggalKeluar": "stirng",
+        "StatusPembayaran": "string",
+        "DetailTransaksi": [
+            {
+                "Id": int,
+                "IdTransaksi": int,
+                "IdLayanan": int,
+                "Quantity": int
+            }
+        ]
+    }
 }
 ```
 
