@@ -21,7 +21,7 @@ func main() {
 			groupCustomers.GET("/:id", handlers.ViewDataPelangganById) // /api/customers/:id
 
 			// Mendaftarkan pelanggan baru
-			groupCustomers.POST("/", handlers.AddPelanggan) // /api/customers/add
+			groupCustomers.POST("/", handlers.AddPelanggan) // /api/customers
 
 			// Update data pelanggan
 			groupCustomers.PUT("/:id", handlers.UpdatePelanggan) // /api/customers/:id
