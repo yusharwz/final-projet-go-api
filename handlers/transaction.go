@@ -26,29 +26,18 @@ func AddTransaksi(c *gin.Context) {
 
 	query := "INSERT INTO transaksi (id_pelanggan, id_pegawai, tanggal_keluar, status_pembayaran) VALUES ($1, $2, $3, $4) RETURNING id, tanggal_masuk"
 
-	var transaksiId int
-	var tanggalMasuk string
-
-	err = tx.QueryRow(query, transaksi.IdPelanggan, transaksi.IdPegawai, transaksi.TanggalKeluar, transaksi.StatusPembayaran).Scan(&transaksiId, &tanggalMasuk)
+	err = tx.QueryRow(query, transaksi.IdPelanggan, transaksi.IdPegawai, transaksi.TanggalKeluar, transaksi.StatusPembayaran).Scan(&transaksi.Id, &transaksi.TanggalMasuk)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	transaksi.Id = transaksiId
-	transaksi.TanggalMasuk = tanggalMasuk
-
-	var detailTransaksiId int
-
 	for i, detail := range transaksi.DetailTransaksi {
-		err = tx.QueryRow("INSERT INTO detail_transaksi (id_transaksi, id_layanan, quantity) VALUES ($1, $2, $3) RETURNING id", transaksiId, detail.IdLayanan, detail.Quantity).Scan(&detailTransaksiId)
+		err = tx.QueryRow("INSERT INTO detail_transaksi (id_transaksi, id_layanan, quantity) VALUES ($1, $2, $3) RETURNING id, id_transaksi", transaksi.Id, detail.IdLayanan, detail.Quantity).Scan(&transaksi.DetailTransaksi[i].Id, &transaksi.DetailTransaksi[i].IdTransaksi)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
-		transaksi.DetailTransaksi[i].IdTransaksi = transaksiId
-		transaksi.DetailTransaksi[i].Id = detailTransaksiId
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -90,7 +79,6 @@ func ViewTransaction(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var totalPembayaran int
 	var transactionDetails []entity.TransactionDetail
 	for rows.Next() {
 		var detail entity.TransactionDetail
@@ -100,7 +88,6 @@ func ViewTransaction(c *gin.Context) {
 			return
 		}
 		transactionDetails = append(transactionDetails, detail)
-		totalPembayaran += detail.Harga
 	}
 
 	if len(transactionDetails) > 0 {
@@ -269,7 +256,7 @@ func ViewTransactionByTransactionID(c *gin.Context) {
 	}
 
 	if len(transactionDetails) > 0 {
-		c.JSON(http.StatusOK, gin.H{"Detail Transaksi": transactionDetails})
+		c.JSON(http.StatusOK, gin.H{"Detail Transaksi": transactionDetails, "Total Pembayaran": totalPembayaran})
 	} else {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Transaksi dengan ID tersebut tidak ditemukan"})
 	}

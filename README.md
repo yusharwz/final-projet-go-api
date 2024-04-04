@@ -163,7 +163,7 @@ Response :
 }
 ```
 
-#### Get Transaction
+#### Get Transaction By Transaction ID
 
 Request :
 
@@ -190,12 +190,24 @@ Response :
             "NamaPegawai": "string",
             "TanggalMasuk": "string",
             "Harga": int
+        },
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
         }
-    ]
+    ],
+    "Total Pembayaran": int
 }
 
 
 ```
+#### Get Transaction By Customer ID
+
+Request :
 
 - Method : GET
 - Endpoint : `/api/transactions/customers/id/:id`
@@ -218,10 +230,22 @@ Response :
             "NamaPegawai": "string",
             "TanggalMasuk": "string",
             "Harga": int
+        },
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
         }
-    ]
+    ],
+    "Total Pembayaran": int
 }
 ```
+#### Get Transaction By Customer Name
+
+Request :
 
 - Method : GET
 - Endpoint : `/api/transactions/customers/name/:name`
@@ -244,8 +268,17 @@ Response :
             "NamaPegawai": "string",
             "TanggalMasuk": "string",
             "Harga": int
+        },
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
         }
-    ]
+    ],
+    "Total Pembayaran": int
 }
 ```
 
