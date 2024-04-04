@@ -16,7 +16,7 @@ func main() {
 		groupCustomers.GET("/", handlers.ViewDataPelanggan)
 
 		// Menampilkan pelanggan bedasarkan id
-		groupCustomers.GET("/:id", handlers.ViewDataPelangganById)
+		groupCustomers.GET("/search/:id", handlers.ViewDataPelangganById)
 
 		// Mendaftarkan pelanggan baru
 		groupCustomers.POST("/add", handlers.AddPelanggan)
@@ -26,6 +26,24 @@ func main() {
 
 		// Hapus data pelanggan
 		groupCustomers.DELETE("/delete/:id", handlers.DeletePelanggan)
+	}
+
+	groupServices := router.Group("/api/services")
+	{
+		// Menampilkan semua pelanggan
+		groupServices.GET("/", handlers.ViewListService)
+
+		// Menampilkan pelanggan bedasarkan id
+		groupServices.GET("/search/:id", handlers.ViewListServiceById)
+
+		// Mendaftarkan pelanggan baru
+		groupServices.POST("/add", handlers.AddNewService)
+
+		// Update data pelanggan
+		groupServices.PUT("/update/:id", handlers.UpdateService)
+
+		// Hapus data pelanggan
+		groupServices.DELETE("/delete/:id", handlers.DeleteService)
 	}
 
 	groupEmployess := router.Group("/api/employees")

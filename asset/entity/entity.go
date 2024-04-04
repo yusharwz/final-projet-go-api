@@ -14,6 +14,7 @@ type Pegawai struct {
 type Layanan struct {
 	Id          int
 	NamaLayanan string
+	Satuan      string
 	Harga       int
 }
 

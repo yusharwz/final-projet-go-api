@@ -59,31 +59,12 @@ func AddTransaksi(c *gin.Context) {
 }
 
 func ViewTransaction(c *gin.Context) {
-	searchId := c.Query("id")
 
 	var rows *sql.Rows
 	var err error
 
-	query := `SELECT 
-	mst_pelanggan.nama_pelanggan, 
-	layanan.nama_layanan, 
-	detail_transaksi.quantity, 
-	mst_pegawai.nama_pegawai, 
-	transaksi.tanggal_masuk, 
-	layanan.harga * detail_transaksi.quantity AS total_harga 
-FROM 
-	transaksi 
-JOIN 
-	mst_pelanggan ON transaksi.id_pelanggan = mst_pelanggan.id 
-JOIN 
-	detail_transaksi ON transaksi.id = detail_transaksi.id_transaksi 
-JOIN 
-	layanan ON detail_transaksi.id_layanan = layanan.id 
-JOIN 
-	mst_pegawai ON transaksi.id_pegawai = mst_pegawai.id`
-
-	if searchId != "" {
-		query = `SELECT 
+	query := `
+	SELECT 
 		mst_pelanggan.nama_pelanggan, 
 		layanan.nama_layanan, 
 		detail_transaksi.quantity, 
@@ -99,11 +80,10 @@ JOIN
 	JOIN 
 		layanan ON detail_transaksi.id_layanan = layanan.id 
 	JOIN 
-		mst_pegawai ON transaksi.id_pegawai = mst_pegawai.id WHERE transaksi.id = $1;`
-		rows, err = db.Query(query, searchId)
-	} else {
-		rows, err = db.Query(query)
-	}
+		mst_pegawai ON transaksi.id_pegawai = mst_pegawai.id`
+
+	rows, err = db.Query(query)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "transaksi dengan id tersebut tidak ditemukan"})
 		return

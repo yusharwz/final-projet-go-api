@@ -9,7 +9,7 @@
 Request :
 
 - Method : `POST`
-- Endpoint : `/customers/add`
+- Endpoint : `/api/customers/add`
 
 ```json
 {
@@ -25,11 +25,9 @@ Response :
 
 ```json
 {
-  "data": {
     "id": "string",
     "Name": "string",
     "NoHp": "string"
-  }
 }
 ```
 
@@ -38,7 +36,7 @@ Response :
 Request :
 
 - Method : GET
-- Endpoint : `/customers/:id`
+- Endpoint : `/api/customers/search/:id`
 - Header :
   - Accept : application/json
 
@@ -48,13 +46,10 @@ Response :
 - Body :
 
 ```json
-{
-  "message": "string",
-  "data": {
+ {
     "Id": "string",
     "Name": "string",
     "NoHp": "string"
-  }
 }
 ```
 
@@ -63,7 +58,7 @@ Response :
 Request :
 
 - Method : PUT
-- Endpoint : `/customers/update/:id`
+- Endpoint : `/api/customers/update/:id`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -96,7 +91,7 @@ Response :
 Request :
 
 - Method : DELETE
-- Endpoint : `/customers/delete/:id`
+- Endpoint : `/api/customers/delete/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -120,7 +115,7 @@ Response :
 Request :
 
 - Method : POST
-- Endpoint : `/transactions`
+- Endpoint : `/api/transactions/add`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -142,7 +137,7 @@ Request :
 
 ```
 
-Request :
+Response :
 
 - Status Code: 201 Created
 - Body :
@@ -172,8 +167,10 @@ Request :
 
 Request :
 
+Pattern string date : `yyyy-mm-dd`
+
 - Method : GET
-- Endpoint : `/transactions/:id_bill`
+- Endpoint : `/api/transactions/search/id/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -185,40 +182,70 @@ Response :
 
 ```json
 {
-	"message": "string",
-  "data": {
-    "id": "string",
-    "billDate": "string",
-    "entryDate": "string",
-    "finishDate": "string",
-    "employee": {
-      "id": "string",
-      "name": "string",
-      "phoneNumber": "string",
-      "address": "string"
-    },
-    "customer": {
-      "id": "string",
-      "name": "string",
-      "phoneNumber": "string",
-      "address": "string"
-    },
-    "billDetails": [
-      {
-        "id": "string",
-        "billId": "string",
-        "product": {
-          "id": "string",
-          "name": "string",
-          "price": int,
-          "unit": "string" (satuan product,cth: Buah atau Kg)
-        },
-        "productPrice": int,
-        "qty": int
-      }
-    ],
-    "totalBill": int
-  }
+    "Detail Transaksi": [
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
+        }
+    ]
+}
+
+
+```
+
+- Method : GET
+- Endpoint : `/api/transactions/search/users/id/:id`
+- Header :
+  - Accept : application/json
+- Body :
+
+Response :
+
+- Status Code: 200 OK
+- Body :
+
+```json
+{
+    "Detail Transaksi": [
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
+        }
+    ]
+}
+```
+
+- Method : GET
+- Endpoint : `/api/transactions/search/users/name/:name`
+- Header :
+  - Accept : application/json
+- Body :
+
+Response :
+
+- Status Code: 200 OK
+- Body :
+
+```json
+{
+    "Detail Transaksi": [
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
+        }
+    ]
 }
 ```
 
@@ -229,7 +256,7 @@ Pattern string date : `dd-MM-yyyy`
 Request :
 
 - Method : GET
-- Endpoint : `/transactions`
+- Endpoint : `/api/transactions`
 - Header :
   - Accept : application/json
 - Query Param :
@@ -245,41 +272,329 @@ Response :
 
 ```json
 {
-	"message": "string",
-  "data": [
-    {
-      "id": "string",
-      "billDate": "string",
-      "entryDate": "string",
-      "finishDate": "string",
-      "employee": {
-        "id": "string",
-        "name": "string",
-        "phoneNumber": "string",
-        "address": "string"
-      },
-      "customer": {
-        "id": "string",
-        "name": "string",
-        "phoneNumber": "string",
-        "address": "string"
-      },
-      "billDetails": [
+    "All Transaksi": [
         {
-          "id": "string",
-          "billId": "string",
-          "product": {
-            "id": "string",
-            "name": "string",
-            "price": int,
-            "unit": "string" (satuan product,cth: Buah atau Kg)
-          },
-          "productPrice": int,
-          "qty": int
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
+        },
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
+        },
+        {
+            "NamaPelanggan": "string",
+            "NamaLayanan": "string",
+            "Quantity": int,
+            "NamaPegawai": "string",
+            "TanggalMasuk": "string",
+            "Harga": int
         }
-      ],
-      "totalBill": int
+    ]
+}
+```
+
+### Service API
+
+#### Create Service
+
+Request :
+
+- Method : POST
+- Endpoint : `/api/services/add`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+
+```json
+{
+	"NamaLayanan": "string",
+  "Satuan": "string",
+  "Harga": int
+}
+```
+
+Response :
+
+- Status Code: 201 Created
+- Body:
+
+```json
+{
+    "Id": int,
+    "NamaLayanan": "string",
+    "Satuan": "string",
+    "Harga": int
+}
+```
+
+#### List Service
+
+Request :
+
+- Method : GET
+- Endpoint : `/api/service`
+  - Header :
+  - Accept : application/json
+- Query Param :
+  - productName : string `optional`,
+
+Response :
+
+- Status Code : 200 OK
+- Body:
+
+```json
+[
+    {
+        "Id": int,
+        "NamaLayanan": "string",
+        "Satuan": "string",
+        "Harga": int
+    },
+    {
+        "Id": int,
+        "NamaLayanan": "string",
+        "Satuan": "string",
+        "Harga": int
+    },
+    {
+        "Id": int,
+        "NamaLayanan": "string",
+        "Satuan": "string",
+        "Harga": int
+    },
+    {
+        "Id": int,
+        "NamaLayanan": "string",
+        "Satuan": "string",
+        "Harga": int
     }
-  ]
+]
+```
+
+#### Service By Id
+
+Request :
+
+- Method : GET
+- Endpoint : `/api/service/search/:id`
+- Header :
+  - Accept : application/json
+
+Response :
+
+- Status Code: 200 OK
+- Body :
+
+```json
+[
+    {
+        "Id": int,
+        "NamaLayanan": "string",
+        "Satuan": "string",
+        "Harga": int
+    }
+]
+```
+
+#### Update Service
+
+Request :
+
+- Method : PUT
+- Endpoint : `/api/services/update/:id`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+
+```json
+{
+    "NamaLayanan": "string",
+    "Satuan": "string",
+    "Harga": int
+}
+```
+
+Response :
+
+- Status Code: 200 OK
+- Body :
+
+```json
+{
+    "Id": int,
+    "NamaLayanan": "string",
+    "Satuan": "string",
+    "Harga": int
+}
+```
+
+#### Delete Service
+
+Request :
+
+- Method : DELETE
+- Endpoint : `/api/services/delete/:id`
+- Header :
+  - Accept : application/json
+- Body :
+
+Response :
+
+- Status : 200 OK
+- Body :
+
+```json
+{
+    "message": "string"
+}
+```
+
+### Employe API
+
+#### Create Employe
+
+Request :
+
+- Method : POST
+- Endpoint : `/api/employees/add`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+
+```json
+ {
+    "Name": "string"
+ }
+```
+
+Response :
+
+- Status Code: 201 Created
+- Body:
+
+```json
+{
+    "Id": int,
+    "Name": "string"
+}
+```
+
+#### List Service
+
+Request :
+
+- Method : GET
+- Endpoint : `/api/employees`
+  - Header :
+  - Accept : application/json
+
+Response :
+
+- Status Code : 200 OK
+- Body:
+
+```json
+[
+    {
+        "Id": int,
+        "Name": "string"
+    },
+    {
+        "Id": int,
+        "Name": "string"
+    },
+    {
+        "Id": int,
+        "Name": "string"
+    },
+    {
+        "Id": int,
+        "Name": "string"
+    }
+]
+```
+
+#### employe By Id
+
+Request :
+
+- Method : GET
+- Endpoint : `/api/employees/search/:id`
+- Header :
+  - Accept : application/json
+
+Response :
+
+- Status Code: 200 OK
+- Body :
+
+```json
+[
+    {
+        "Id": int,
+        "Name": "string"
+    }
+]
+```
+
+#### Update Service
+
+Request :
+
+- Method : PUT
+- Endpoint : `/api/employees/update/:id`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+
+```json
+{
+  "Name": "string"
+}
+```
+
+Response :
+
+- Status Code: 200 OK
+- Body :
+
+```json
+{
+    "Id": int,
+    "Name": "string"
+}
+```
+
+#### Delete Service
+
+Request :
+
+- Method : DELETE
+- Endpoint : `/api/employees/delete/:id`
+- Header :
+  - Accept : application/json
+- Body :
+
+Response :
+
+- Status : 200 OK
+- Body :
+
+```json
+{
+    "message": "string"
 }
 ```

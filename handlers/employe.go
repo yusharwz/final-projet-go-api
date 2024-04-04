@@ -85,7 +85,7 @@ func AddPegawai(c *gin.Context) {
 		return
 	}
 
-	query := "INSERT INTO mst_pegawai (nama_pegawai VALUES ($1) RETURNING id;"
+	query := "INSERT INTO mst_pegawai (nama_pegawai) VALUES ($1) RETURNING id;"
 
 	var employeId int
 
