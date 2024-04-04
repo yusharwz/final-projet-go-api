@@ -9,7 +9,7 @@
 Request :
 
 - Method : `POST`
-- Endpoint : `/api/customers/`
+- Endpoint : `/api/customers`
 
 ```json
 {
@@ -115,7 +115,7 @@ Response :
 Request :
 
 - Method : POST
-- Endpoint : `/api/transactions/`
+- Endpoint : `/api/transactions`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -308,7 +308,7 @@ Response :
 Request :
 
 - Method : POST
-- Endpoint : `/api/services/`
+- Endpoint : `/api/services`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
