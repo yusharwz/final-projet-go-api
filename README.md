@@ -9,7 +9,7 @@
 Request :
 
 - Method : `POST`
-- Endpoint : `/api/customers/add`
+- Endpoint : `/api/customers/`
 
 ```json
 {
@@ -36,7 +36,7 @@ Response :
 Request :
 
 - Method : GET
-- Endpoint : `/api/customers/search/:id`
+- Endpoint : `/api/customers/:id`
 - Header :
   - Accept : application/json
 
@@ -58,7 +58,7 @@ Response :
 Request :
 
 - Method : PUT
-- Endpoint : `/api/customers/update/:id`
+- Endpoint : `/api/customers/:id`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -91,7 +91,7 @@ Response :
 Request :
 
 - Method : DELETE
-- Endpoint : `/api/customers/delete/:id`
+- Endpoint : `/api/customers/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -115,7 +115,7 @@ Response :
 Request :
 
 - Method : POST
-- Endpoint : `/api/transactions/add`
+- Endpoint : `/api/transactions/`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -170,7 +170,7 @@ Request :
 Pattern string date : `yyyy-mm-dd`
 
 - Method : GET
-- Endpoint : `/api/transactions/search/id/:id`
+- Endpoint : `/api/transactions/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -198,7 +198,7 @@ Response :
 ```
 
 - Method : GET
-- Endpoint : `/api/transactions/search/users/id/:id`
+- Endpoint : `/api/transactions/customers/id/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -224,7 +224,7 @@ Response :
 ```
 
 - Method : GET
-- Endpoint : `/api/transactions/search/users/name/:name`
+- Endpoint : `/api/transactions/customers/name/:name`
 - Header :
   - Accept : application/json
 - Body :
@@ -308,7 +308,7 @@ Response :
 Request :
 
 - Method : POST
-- Endpoint : `/api/services/add`
+- Endpoint : `/api/services/`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -341,7 +341,7 @@ Response :
 Request :
 
 - Method : GET
-- Endpoint : `/api/service`
+- Endpoint : `/api/services`
   - Header :
   - Accept : application/json
 - Query Param :
@@ -386,7 +386,7 @@ Response :
 Request :
 
 - Method : GET
-- Endpoint : `/api/service/search/:id`
+- Endpoint : `/api/service/:id`
 - Header :
   - Accept : application/json
 
@@ -411,7 +411,7 @@ Response :
 Request :
 
 - Method : PUT
-- Endpoint : `/api/services/update/:id`
+- Endpoint : `/api/services/:id`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -444,7 +444,7 @@ Response :
 Request :
 
 - Method : DELETE
-- Endpoint : `/api/services/delete/:id`
+- Endpoint : `/api/services/:id`
 - Header :
   - Accept : application/json
 - Body :
@@ -467,7 +467,7 @@ Response :
 Request :
 
 - Method : POST
-- Endpoint : `/api/employees/add`
+- Endpoint : `/api/employees`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -531,7 +531,7 @@ Response :
 Request :
 
 - Method : GET
-- Endpoint : `/api/employees/search/:id`
+- Endpoint : `/api/employees/:id`
 - Header :
   - Accept : application/json
 
@@ -554,7 +554,7 @@ Response :
 Request :
 
 - Method : PUT
-- Endpoint : `/api/employees/update/:id`
+- Endpoint : `/api/employees/:id`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -583,7 +583,7 @@ Response :
 Request :
 
 - Method : DELETE
-- Endpoint : `/api/employees/delete/:id`
+- Endpoint : `/api/employees/:id`
 - Header :
   - Accept : application/json
 - Body :
