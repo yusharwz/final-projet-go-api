@@ -32,19 +32,19 @@ func main() {
 
 		groupServices := groupApi.Group("/services") // /api/services
 		{
-			// Menampilkan semua pelanggan
+			// Menampilkan semua layanan
 			groupServices.GET("/", handlers.ViewListService) // /api/services
 
-			// Menampilkan pelanggan bedasarkan id
+			// Menampilkan layanan bedasarkan id
 			groupServices.GET("/:id", handlers.ViewListServiceById) // /api/services/:id
 
-			// Mendaftarkan pelanggan baru
+			// Mendaftarkan layanan baru
 			groupServices.POST("/", handlers.AddNewService) // /api/services
 
-			// Update data pelanggan
+			// Update data layanan
 			groupServices.PUT("/:id", handlers.UpdateService) // /api/services/:id
 
-			// Hapus data pelanggan
+			// Hapus data layanan
 			groupServices.DELETE("/:id", handlers.DeleteService) // /api/services/:id
 		}
 
