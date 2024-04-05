@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddTransaksi(c *gin.Context) {
+func AddTransaksi(c *gin.Context, db *sql.DB) {
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -47,10 +47,7 @@ func AddTransaksi(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"transaksi": transaksi})
 }
 
-func ViewTransaction(c *gin.Context) {
-
-	var rows *sql.Rows
-	var err error
+func ViewTransaction(c *gin.Context, db *sql.DB) {
 
 	query := `
 	SELECT 
@@ -71,7 +68,7 @@ func ViewTransaction(c *gin.Context) {
 	JOIN 
 		mst_pegawai ON transaksi.id_pegawai = mst_pegawai.id`
 
-	rows, err = db.Query(query)
+	rows, err := db.Query(query)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "transaksi dengan id tersebut tidak ditemukan"})
@@ -97,11 +94,8 @@ func ViewTransaction(c *gin.Context) {
 	}
 }
 
-func ViewTransactionByCustomerName(c *gin.Context) {
+func ViewTransactionByCustomerName(c *gin.Context, db *sql.DB) {
 	customerName := strings.ToLower(c.Param("name"))
-
-	var rows *sql.Rows
-	var err error
 
 	query := `
 		SELECT 
@@ -125,7 +119,7 @@ func ViewTransactionByCustomerName(c *gin.Context) {
 			LOWER(mst_pelanggan.nama_pelanggan) LIKE '%' || $1 || '%';
 	`
 
-	rows, err = db.Query(query, customerName)
+	rows, err := db.Query(query, customerName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar transaksi"})
 		return
@@ -152,11 +146,8 @@ func ViewTransactionByCustomerName(c *gin.Context) {
 	}
 }
 
-func ViewTransactionByCustomerID(c *gin.Context) {
+func ViewTransactionByCustomerID(c *gin.Context, db *sql.DB) {
 	customerID := c.Param("id")
-
-	var rows *sql.Rows
-	var err error
 
 	query := `
 		SELECT 
@@ -180,7 +171,7 @@ func ViewTransactionByCustomerID(c *gin.Context) {
 			mst_pelanggan.id = $1
 	`
 
-	rows, err = db.Query(query, customerID)
+	rows, err := db.Query(query, customerID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar transaksi"})
 		return
@@ -207,11 +198,8 @@ func ViewTransactionByCustomerID(c *gin.Context) {
 	}
 }
 
-func ViewTransactionByTransactionID(c *gin.Context) {
+func ViewTransactionByTransactionID(c *gin.Context, db *sql.DB) {
 	transactionID := c.Param("id")
-
-	var rows *sql.Rows
-	var err error
 
 	query := `
         SELECT 
@@ -235,7 +223,7 @@ func ViewTransactionByTransactionID(c *gin.Context) {
             transaksi.id = $1
     `
 
-	rows, err = db.Query(query, transactionID)
+	rows, err := db.Query(query, transactionID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar transaksi"})
 		return

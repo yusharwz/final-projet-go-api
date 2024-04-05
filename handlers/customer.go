@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"api-enigma-laundry/asset/entity"
-	"api-enigma-laundry/config"
 	"database/sql"
 	"net/http"
 	"strconv"
@@ -10,22 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var db = config.ConnectDb()
-
-func ViewDataPelanggan(c *gin.Context) {
-	searchId := c.Query("id")
-
-	var rows *sql.Rows
-	var err error
+func ViewDataPelanggan(c *gin.Context, db *sql.DB) {
 
 	query := "SELECT * FROM mst_pelanggan"
 
-	if searchId != "" {
-		query += " WHERE id = $1;"
-		rows, err = db.Query(query, searchId)
-	} else {
-		rows, err = db.Query(query)
-	}
+	rows, err := db.Query(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "pelanggan dengan id tersebut tidak ditemukan"})
 		return
@@ -49,14 +37,11 @@ func ViewDataPelanggan(c *gin.Context) {
 	}
 }
 
-func ViewDataPelangganById(c *gin.Context) {
+func ViewDataPelangganById(c *gin.Context, db *sql.DB) {
 	searchId := c.Param("id")
 
-	var rows *sql.Rows
-	var err error
-
 	query := "SELECT * FROM mst_pelanggan WHERE id = $1;"
-	rows, err = db.Query(query, searchId)
+	rows, err := db.Query(query, searchId)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "pelanggan dengan id tersebut tidak ditemukan"})
@@ -81,7 +66,7 @@ func ViewDataPelangganById(c *gin.Context) {
 	}
 }
 
-func AddPelanggan(c *gin.Context) {
+func AddPelanggan(c *gin.Context, db *sql.DB) {
 	var customer entity.Customers
 	if err := c.ShouldBindJSON(&customer); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -101,7 +86,7 @@ func AddPelanggan(c *gin.Context) {
 	c.JSON(http.StatusCreated, customer)
 }
 
-func UpdatePelanggan(c *gin.Context) {
+func UpdatePelanggan(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var customer entity.Customers
@@ -136,7 +121,7 @@ func UpdatePelanggan(c *gin.Context) {
 	c.JSON(http.StatusOK, customer)
 }
 
-func DeletePelanggan(c *gin.Context) {
+func DeletePelanggan(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var existingCustomer entity.Customers

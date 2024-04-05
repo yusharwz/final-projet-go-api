@@ -9,14 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ViewListService(c *gin.Context) {
-
-	var rows *sql.Rows
-	var err error
+func ViewListService(c *gin.Context, db *sql.DB) {
 
 	query := "SELECT * FROM layanan"
 
-	rows, err = db.Query(query)
+	rows, err := db.Query(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil daftar layanan"})
 		return
@@ -40,15 +37,12 @@ func ViewListService(c *gin.Context) {
 	}
 }
 
-func ViewListServiceById(c *gin.Context) {
+func ViewListServiceById(c *gin.Context, db *sql.DB) {
 	searchId := c.Param("id")
-
-	var rows *sql.Rows
-	var err error
 
 	query := "SELECT * FROM layanan WHERE id = $1"
 
-	rows, err = db.Query(query, searchId)
+	rows, err := db.Query(query, searchId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil daftar layanan"})
 		return
@@ -72,7 +66,7 @@ func ViewListServiceById(c *gin.Context) {
 	}
 }
 
-func AddNewService(c *gin.Context) {
+func AddNewService(c *gin.Context, db *sql.DB) {
 	var service entity.Layanan
 	if err := c.ShouldBindJSON(&service); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -92,7 +86,7 @@ func AddNewService(c *gin.Context) {
 	c.JSON(http.StatusCreated, service)
 }
 
-func UpdateService(c *gin.Context) {
+func UpdateService(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var service entity.Layanan
@@ -131,7 +125,7 @@ func UpdateService(c *gin.Context) {
 	c.JSON(http.StatusOK, service)
 }
 
-func DeleteService(c *gin.Context) {
+func DeleteService(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var existingService entity.Layanan

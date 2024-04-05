@@ -9,20 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ViewDataPegawai(c *gin.Context) {
-	searchId := c.Query("id")
-
-	var rows *sql.Rows
-	var err error
+func ViewDataPegawai(c *gin.Context, db *sql.DB) {
 
 	query := "SELECT * FROM mst_pegawai"
 
-	if searchId != "" {
-		query += " WHERE id = $1;"
-		rows, err = db.Query(query, searchId)
-	} else {
-		rows, err = db.Query(query)
-	}
+	rows, err := db.Query(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "pegawai dengan id tersebut tidak ditemukan"})
 		return
@@ -46,15 +37,11 @@ func ViewDataPegawai(c *gin.Context) {
 	}
 }
 
-func ViewDataPegawaiById(c *gin.Context) {
+func ViewDataPegawaiById(c *gin.Context, db *sql.DB) {
 	searchId := c.Param("id")
 
-	var rows *sql.Rows
-	var err error
-
 	query := "SELECT * FROM mst_pegawai WHERE id = $1;"
-	rows, err = db.Query(query, searchId)
-
+	rows, err := db.Query(query, searchId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "pegawai dengan id tersebut tidak ditemukan"})
 		return
@@ -78,7 +65,7 @@ func ViewDataPegawaiById(c *gin.Context) {
 	}
 }
 
-func AddPegawai(c *gin.Context) {
+func AddPegawai(c *gin.Context, db *sql.DB) {
 	var employe entity.Pegawai
 	if err := c.ShouldBindJSON(&employe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -98,7 +85,7 @@ func AddPegawai(c *gin.Context) {
 	c.JSON(http.StatusCreated, employe)
 }
 
-func UpdatePegawai(c *gin.Context) {
+func UpdatePegawai(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var employe entity.Pegawai
@@ -129,7 +116,7 @@ func UpdatePegawai(c *gin.Context) {
 	c.JSON(http.StatusOK, employe)
 }
 
-func DeletePegawai(c *gin.Context) {
+func DeletePegawai(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var existingEmploye entity.Pegawai

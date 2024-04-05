@@ -15,11 +15,11 @@ const (
 	dbname   = "enigma_laundry"
 )
 
-func ConnectDb() *sql.DB {
+func ConnectDb() (db *sql.DB, err error) {
 
 	var PsqlInfo = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
-	db, err := sql.Open("postgres", PsqlInfo)
+	db, err = sql.Open("postgres", PsqlInfo)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -28,5 +28,5 @@ func ConnectDb() *sql.DB {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return db
+	return db, nil
 }
