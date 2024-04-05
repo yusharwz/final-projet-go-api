@@ -27,29 +27,11 @@ type Transaksi struct {
 	StatusPembayaran string
 }
 
-type TransaksiAndDetail struct {
-	Id               int
-	IdPelanggan      int
-	IdPegawai        int
-	TanggalMasuk     string
-	TanggalKeluar    string
-	StatusPembayaran string
-	DetailTransaksi  []DetailTransaction
-}
-
-type DetailTransaction struct {
-	Id          int
-	IdTransaksi int
-	IdLayanan   int
-	Quantity    int
-}
-
 type DetailTransaksi struct {
 	Id          int
 	IdTransaksi int
 	IdLayanan   int
 	Quantity    int
-	TotalHarga  int
 }
 
 type TransactionDetail struct {
@@ -59,4 +41,14 @@ type TransactionDetail struct {
 	NamaPegawai   string
 	TanggalMasuk  string
 	Harga         int
+}
+
+type TransaksiAndDetail struct {
+	Id               int
+	IdPelanggan      int
+	IdPegawai        int
+	TanggalMasuk     string
+	TanggalKeluar    string
+	StatusPembayaran string
+	DetailTransaksi  []DetailTransaksi
 }
