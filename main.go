@@ -1,12 +1,19 @@
 package main
 
 import (
+	"api-enigma-laundry/config"
 	"api-enigma-laundry/handlers"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+
+	db, err := config.ConnectDb()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
 	router := gin.Default()
 
@@ -15,73 +22,113 @@ func main() {
 		groupCustomers := groupApi.Group("/customers") // /api/customers
 		{
 			// Menampilkan semua pelanggan
-			groupCustomers.GET("/", handlers.ViewDataPelanggan) // /api/customers
+			groupCustomers.GET("/", func(c *gin.Context) {
+				handlers.ViewDataPelanggan(c, db)
+			}) // /api/customers
 
 			// Menampilkan pelanggan bedasarkan id
-			groupCustomers.GET("/:id", handlers.ViewDataPelangganById) // /api/customers/:id
+			groupCustomers.GET("/:id", func(c *gin.Context) {
+				handlers.ViewDataPelangganById(c, db)
+			}) // /api/customers/:id
 
 			// Mendaftarkan pelanggan baru
-			groupCustomers.POST("/", handlers.AddPelanggan) // /api/customers
+			groupCustomers.POST("/", func(c *gin.Context) {
+				handlers.AddPelanggan(c, db)
+			}) // /api/customers
 
 			// Update data pelanggan
-			groupCustomers.PUT("/:id", handlers.UpdatePelanggan) // /api/customers/:id
+			groupCustomers.PUT("/:id", func(c *gin.Context) {
+				handlers.UpdatePelanggan(c, db)
+			}) // /api/customers/:id
 
 			// Hapus data pelanggan
-			groupCustomers.DELETE("/:id", handlers.DeletePelanggan) // /api/customers/:id
+			groupCustomers.DELETE("/:id", func(c *gin.Context) {
+				handlers.DeletePelanggan(c, db)
+			}) // /api/customers/:id
 		}
 
 		groupServices := groupApi.Group("/services") // /api/services
 		{
 			// Menampilkan semua layanan
-			groupServices.GET("/", handlers.ViewListService) // /api/services
+			groupServices.GET("/", func(c *gin.Context) {
+				handlers.ViewListService(c, db)
+			}) // /api/services
 
 			// Menampilkan layanan bedasarkan id
-			groupServices.GET("/:id", handlers.ViewListServiceById) // /api/services/:id
+			groupServices.GET("/:id", func(c *gin.Context) {
+				handlers.ViewListServiceById(c, db)
+			}) // /api/services/:id
 
 			// Mendaftarkan layanan baru
-			groupServices.POST("/", handlers.AddNewService) // /api/services
+			groupServices.POST("/", func(c *gin.Context) {
+				handlers.AddNewService(c, db)
+			}) // /api/services
 
 			// Update data layanan
-			groupServices.PUT("/:id", handlers.UpdateService) // /api/services/:id
+			groupServices.PUT("/:id", func(c *gin.Context) {
+				handlers.UpdateService(c, db)
+			}) // /api/services/:id
 
 			// Hapus data layanan
-			groupServices.DELETE("/:id", handlers.DeleteService) // /api/services/:id
+			groupServices.DELETE("/:id", func(c *gin.Context) {
+				handlers.DeleteService(c, db)
+			}) // /api/services/:id
 		}
 
 		groupEmployess := groupApi.Group("/employees") // /api/employees
 		{
 			// Menampilkan semua pegawai
-			groupEmployess.GET("/", handlers.ViewDataPegawai) // /api/employees
+			groupEmployess.GET("/", func(c *gin.Context) {
+				handlers.ViewDataPegawai(c, db)
+			}) // /api/employees
 
 			// Menampilkan pegawai bedasarkan id
-			groupEmployess.GET("/:id", handlers.ViewDataPegawaiById) // /api/employees/:id
+			groupEmployess.GET("/:id", func(c *gin.Context) {
+				handlers.ViewDataPegawaiById(c, db)
+			}) // /api/employees/:id
 
 			// Mendaftarkan pegawai baru
-			groupEmployess.POST("/", handlers.AddPegawai) // /api/employees/add
+			groupEmployess.POST("/", func(c *gin.Context) {
+				handlers.AddPegawai(c, db)
+			}) // /api/employees/add
 
 			// Update data pegawai
-			groupEmployess.PUT("/:id", handlers.UpdatePegawai) // /api/employees/:id
+			groupEmployess.PUT("/:id", func(c *gin.Context) {
+				handlers.UpdatePegawai(c, db)
+			}) // /api/employees/:id
 
 			// Hapus data pegawai
-			groupEmployess.DELETE("/:id", handlers.DeletePegawai) // /api/employees/:id
+			groupEmployess.DELETE("/:id", func(c *gin.Context) {
+				handlers.DeletePegawai(c, db)
+			}) // /api/employees/:id
 		}
 
 		groupTransactions := groupApi.Group("/transactions") // /api/transactions
 		{
 			// Menampilkan semua transaksi
-			groupTransactions.GET("/", handlers.ViewTransaction) // /api/transactions
+			groupTransactions.GET("/", func(c *gin.Context) {
+				handlers.ViewTransaction(c, db)
+			}) // /api/transactions
 
 			// Menampilkan transaksi bedasarkan id transaksi
-			groupTransactions.GET("/:id", handlers.ViewTransactionByTransactionID) // /api/transactions/:id
+			groupTransactions.GET("/:id", func(c *gin.Context) {
+				handlers.ViewTransactionByTransactionID(c, db)
+			}) // /api/transactions/:id
 
 			// Menampilkan transaksi bedasarkan id pelanggan
-			groupTransactions.GET("/customers/id/:id", handlers.ViewTransactionByCustomerID) // /api/transactions/customers/id/:id
+			groupTransactions.GET("/customers/id/:id", func(c *gin.Context) {
+				handlers.ViewTransactionByCustomerID(c, db)
+			}) // /api/transactions/customers/id/:id
 
 			// Menampilkan transaksi bedasarkan nama pelanggan
-			groupTransactions.GET("/customers/name/:name", handlers.ViewTransactionByCustomerName) // /api/transactions/customers/name/:name
+			groupTransactions.GET("/customers/name/:name", func(c *gin.Context) {
+				handlers.ViewTransactionByCustomerName(c, db)
+			}) // /api/transactions/customers/name/:name
 
 			// Mendaftarkan transaksi baru
-			groupTransactions.POST("/", handlers.AddTransaksi) // /api/transactions
+			groupTransactions.POST("/", func(c *gin.Context) {
+				handlers.AddTransaksi(c, db)
+			}) // /api/transactions
 		}
 	}
 
