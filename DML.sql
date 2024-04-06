@@ -47,3 +47,4 @@ INSERT INTO auth (username, password, hit_chance) VALUES
 ('user3', 'password3', 5000),
 ('user4', 'password4', 5000),
 ('user5', 'password5', 5000);
+
