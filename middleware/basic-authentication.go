@@ -42,7 +42,7 @@ func databaseValidator(c *gin.Context) (key, value string, err error) {
 
 	if key == "" || value == "" {
 		c.AbortWithStatusJSON(400, gin.H{
-			"Message": "Invalid username or password. Get a valid username and password authentication on https://get-auth-api.yusharwz.my.id",
+			"Message": "Username or password invalid. Get a valid username and password authentication on https://get-auth-api.yusharwz.my.id",
 		})
 		return
 	}
