@@ -30,5 +30,6 @@ CREATE TABLE detail_transaksi (
 
 CREATE TABLE auth (
     username VARCHAR(255) PRIMARY KEY,
-    password VARCHAR(255)
+    password VARCHAR(255),
+    hit_chance INTEGER
 );
