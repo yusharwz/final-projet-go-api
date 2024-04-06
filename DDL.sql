@@ -27,3 +27,8 @@ CREATE TABLE detail_transaksi (
     id_layanan INTEGER REFERENCES layanan(id),
     quantity INTEGER
 );
+
+CREATE TABLE auth (
+    username VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255)
+);
