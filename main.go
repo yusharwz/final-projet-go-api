@@ -3,6 +3,7 @@ package main
 import (
 	"api-enigma-laundry/config"
 	"api-enigma-laundry/handlers"
+	"api-enigma-laundry/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,9 +16,10 @@ func main() {
 	}
 	defer db.Close()
 
-	router := gin.Default()
+	r := gin.Default()
+	r.Use(middleware.Auth)
 
-	groupApi := router.Group("/api")
+	groupApi := r.Group("/api")
 	{
 		groupCustomers := groupApi.Group("/customers") // /api/customers
 		{
@@ -132,5 +134,5 @@ func main() {
 		}
 	}
 
-	router.Run(":8080")
+	r.Run(":8080")
 }
