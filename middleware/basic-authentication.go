@@ -1,64 +1,69 @@
 package middleware
 
 import (
+	"net/http"
+
 	"api-enigma-laundry/config"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Auth(c *gin.Context) {
+func Auth() gin.HandlerFunc {
+	return func(c *gin.Context) {
 
-	username, password, _ := c.Request.BasicAuth()
+		username, password, ok := c.Request.BasicAuth()
+		if !ok {
+			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 
-	if username == "" && password == "" {
-		c.AbortWithStatusJSON(400, gin.H{
-			"Message": "Authentication required. Get username and password authentication on https://get-auth-api.yusharwz.my.id",
-		})
-		return
+		if !isValidCredentials(username, password) {
+			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		c.Next()
 	}
-
-	_, _, err := databaseValidator(c)
-	if err != nil {
-		return
-	}
-	c.Next()
 }
 
-func databaseValidator(c *gin.Context) (key, value string, err error) {
+func isValidCredentials(username, password string) bool {
 
+	key, value, err := databaseValidator(username, password)
+	if err != nil {
+		return false
+	}
+
+	if key == "" || value == "" {
+		return false
+	}
+	return true
+}
+
+func databaseValidator(username, password string) (key, value string, err error) {
 	var chance int
 
 	db, err := config.ConnectDb()
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"Message": "Server error",
-		})
-		return
+		return "", "", err
 	}
 
-	username, password, _ := c.Request.BasicAuth()
 	query := "SELECT username, password, hit_chance FROM auth WHERE username = $1 AND password = $2"
-	db.QueryRow(query, username, password).Scan(&key, &value, &chance)
-
-	if key == "" || value == "" {
-		c.AbortWithStatusJSON(400, gin.H{
-			"Message": "Invalid username or password. Get a valid username and password authentication on https://get-auth-api.yusharwz.my.id",
-		})
-		return
+	err = db.QueryRow(query, username, password).Scan(&key, &value, &chance)
+	if err != nil {
+		return "", "", err
 	}
 
 	if chance <= 0 {
-		c.AbortWithStatusJSON(400, gin.H{
-			"Message": "Your hit chance is up",
-		})
-		return
-	} else {
-		chance -= 1
-		sqlStatement := "UPDATE auth SET hit_chance = $1  WHERE username = $2"
-		_, err := db.Query(sqlStatement, chance, username)
-		if err != nil {
-			c.AbortWithStatusJSON(500, gin.H{"Message": "Server error"})
-		}
+		return "", "", nil
 	}
+
+	chance--
+	sqlStatement := "UPDATE auth SET hit_chance = $1 WHERE username = $2"
+	_, err = db.Exec(sqlStatement, chance, username)
+	if err != nil {
+		return "", "", err
+	}
+
 	return key, value, nil
 }
