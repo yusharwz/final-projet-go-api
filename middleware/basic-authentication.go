@@ -21,6 +21,7 @@ func Auth() gin.HandlerFunc {
 		if !isValidCredentials(username, password) {
 			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
 			c.AbortWithStatus(http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Need authentication. Get your credentials on https://get-auth-api.yusharwz.my.id/"})
 			return
 		}
 		c.Next()
