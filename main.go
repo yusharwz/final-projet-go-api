@@ -17,7 +17,7 @@ func main() {
 	defer db.Close()
 
 	r := gin.Default()
-	r.Use(middleware.Auth())
+	r.Use(middleware.Auth(db))
 
 	groupApi := r.Group("/api")
 	{
