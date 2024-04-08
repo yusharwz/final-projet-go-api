@@ -1,14 +1,13 @@
 package middleware
 
 import (
+	"database/sql"
 	"net/http"
-
-	"api-enigma-laundry/config"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Auth() gin.HandlerFunc {
+func Auth(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		username, password, ok := c.Request.BasicAuth()
@@ -19,7 +18,7 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		if !isValidCredentials(username, password) {
+		if !isValidCredentials(username, password, db) {
 			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Invalid credential. Get a valid credentials on https://get-auth-api.yusharwz.my.id/"})
@@ -29,9 +28,9 @@ func Auth() gin.HandlerFunc {
 	}
 }
 
-func isValidCredentials(username, password string) bool {
+func isValidCredentials(username, password string, db *sql.DB) bool {
 
-	key, value, err := databaseValidator(username, password)
+	key, value, err := databaseValidator(username, password, db)
 	if err != nil {
 		return false
 	}
@@ -42,13 +41,8 @@ func isValidCredentials(username, password string) bool {
 	return true
 }
 
-func databaseValidator(username, password string) (key, value string, err error) {
+func databaseValidator(username, password string, db *sql.DB) (key, value string, err error) {
 	var chance int
-
-	db, err := config.ConnectDb()
-	if err != nil {
-		return "", "", err
-	}
 
 	query := "SELECT username, password, hit_chance FROM auth WHERE username = $1 AND password = $2"
 	err = db.QueryRow(query, username, password).Scan(&key, &value, &chance)
