@@ -3,6 +3,7 @@ package middleware
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -19,7 +20,7 @@ func Auth(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		if !isValidCredentials(username, password, db) {
+		if !isValidCredentials(strings.ToLower(username), password, db) {
 			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Invalid credential. Get a valid credentials on https://get-auth-api.yusharwz.my.id/"})
