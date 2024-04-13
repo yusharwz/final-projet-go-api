@@ -32,7 +32,7 @@ func Auth(db *sql.DB) gin.HandlerFunc {
 
 func isValidCredentials(username, password string, db *sql.DB) bool {
 
-	key, hashPassword, chance, err := databaseValidator(username, db)
+	key, hashPassword, err := databaseValidator(username, db)
 	if err != nil {
 		return false
 	}
@@ -42,28 +42,32 @@ func isValidCredentials(username, password string, db *sql.DB) bool {
 		return false
 	}
 
-	if key == "" || hashPassword == "" || chance == 0 {
+	if key == "" || hashPassword == "" {
 		return false
 	}
-
-	chance--
-	sqlStatement := "UPDATE auth SET hit_chance = $1 WHERE username = $2"
-	db.Exec(sqlStatement, chance, username)
-
 	return true
 }
 
-func databaseValidator(username string, db *sql.DB) (key, hashPassword string, chance int, err error) {
+func databaseValidator(username string, db *sql.DB) (key, hashPassword string, err error) {
 
-	query := "SELECT username, password, hit_chance FROM auth WHERE username = $1"
-	err = db.QueryRow(query, username).Scan(&key, &hashPassword, &chance)
+	var chance int
+	var status string
+
+	query := "SELECT username, password, hit_chance, status FROM auth WHERE username = $1"
+	err = db.QueryRow(query, username).Scan(&key, &hashPassword, &chance, &status)
 	if err != nil {
-		return "", "", 0, err
+		return "", "", err
 	}
 
-	if chance <= 0 {
-		return "", "", 0, nil
+	if status == "free" {
+		if chance <= 0 {
+			return "", "", nil
+		}
 	}
 
-	return key, hashPassword, chance, nil
+	chance--
+	sqlStatement := "UPDATE auth SET hit_chance = $1 WHERE username = $2 AND status = $3"
+	db.Exec(sqlStatement, chance, username, "free")
+
+	return key, hashPassword, nil
 }
