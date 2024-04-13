@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Auth(db *sql.DB) gin.HandlerFunc {
@@ -30,36 +31,38 @@ func Auth(db *sql.DB) gin.HandlerFunc {
 
 func isValidCredentials(username, password string, db *sql.DB) bool {
 
-	key, value, err := databaseValidator(username, password, db)
+	key, hashPassword, chance, err := databaseValidator(username, db)
 	if err != nil {
 		return false
 	}
 
-	if key == "" || value == "" {
+	err = bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
+	if err != nil {
 		return false
 	}
-	return true
-}
 
-func databaseValidator(username, password string, db *sql.DB) (key, value string, err error) {
-	var chance int
-
-	query := "SELECT username, password, hit_chance FROM auth WHERE username = $1 AND password = $2"
-	err = db.QueryRow(query, username, password).Scan(&key, &value, &chance)
-	if err != nil {
-		return "", "", err
-	}
-
-	if chance <= 0 {
-		return "", "", nil
+	if key == "" || hashPassword == "" || chance == 0 {
+		return false
 	}
 
 	chance--
 	sqlStatement := "UPDATE auth SET hit_chance = $1 WHERE username = $2"
-	_, err = db.Exec(sqlStatement, chance, username)
+	db.Exec(sqlStatement, chance, username)
+
+	return true
+}
+
+func databaseValidator(username string, db *sql.DB) (key, hashPassword string, chance int, err error) {
+
+	query := "SELECT username, password, hit_chance FROM auth WHERE username = $1"
+	err = db.QueryRow(query, username).Scan(&key, &hashPassword, &chance)
 	if err != nil {
-		return "", "", err
+		return "", "", 0, err
 	}
 
-	return key, value, nil
+	if chance <= 0 {
+		return "", "", 0, nil
+	}
+
+	return key, hashPassword, chance, nil
 }
