@@ -2,6 +2,20 @@
 
 ## API Spec
 
+## Autentikasi
+
+Autentikasi diperlukan untuk mengakses beberapa endpoint API. Saat ini, kami menggunakan metode autentikasi [Basic Authentication] untuk melindungi akses ke data sensitif. Untuk mengakses endpoint yang memerlukan autentikasi, Anda perlu menyertakan username dan password yang valid dalam header permintaan Anda.
+
+### Cara Mendapatkan Token JWT
+
+Untuk mendapatkan kredensial, Anda perlu melakukan langkah-langkah berikut:
+
+1. **Registrasi Akun Pengguna:** Kunjungi halaman registrasi di https://get-credential-api.yusharwz.my.id dan buatlah akun pengguna baru.
+2. **Autentikasi Pengguna:** Setelah melakukan pendaftaran, anda akan menerima email yang memberitahukan kredensial yang anda ajukan sedang masuk daftar tunggu.
+3. **Kredensial Siap Digunakan:** Jika kredensial yang anda ajukan di setujui, anda akan menrima email pemberitahuan kembali dan pada saat itu juga kredensial yang anda ajukan sudah bisa digunakan dengan batasan hit per hari sebanyak 1000x hit. Kami menyediakan opsi berlangganan untuk hit limit yang lebih banyak. Kunjungi https://www.yusharwz.my.id/ untuk info lebih lanjut.
+
+Pastikan untuk menyimpan Username dan Password Authentikasi dengan aman dan tidak membagikannya dengan orang lain.
+
 ### Customer API
 
 #### Create Customer
@@ -25,9 +39,9 @@ Response :
 
 ```json
 {
-    "id": "string",
-    "Name": "string",
-    "NoHp": "string"
+  "id": "string",
+  "Name": "string",
+  "NoHp": "string"
 }
 ```
 
@@ -46,10 +60,10 @@ Response :
 - Body :
 
 ```json
- {
-    "Id": "string",
-    "Name": "string",
-    "NoHp": "string"
+{
+  "Id": "string",
+  "Name": "string",
+  "NoHp": "string"
 }
 ```
 
@@ -205,6 +219,7 @@ Response :
 
 
 ```
+
 #### Get Transaction By Customer ID
 
 Request :
@@ -243,6 +258,7 @@ Response :
     "Total Pembayaran": int
 }
 ```
+
 #### Get Transaction By Customer Name
 
 Request :
@@ -489,7 +505,7 @@ Response :
 
 ```json
 {
-    "message": "string"
+  "message": "string"
 }
 ```
 
@@ -507,9 +523,9 @@ Request :
 - Body :
 
 ```json
- {
-    "Name": "string"
- }
+{
+  "Name": "string"
+}
 ```
 
 Response :
@@ -628,6 +644,6 @@ Response :
 
 ```json
 {
-    "message": "string"
+  "message": "string"
 }
 ```
