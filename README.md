@@ -6,7 +6,7 @@
 
 Autentikasi diperlukan untuk mengakses beberapa endpoint API. Saat ini, kami menggunakan metode autentikasi [Basic Authentication] untuk melindungi akses ke data sensitif. Untuk mengakses endpoint yang memerlukan autentikasi, Anda perlu menyertakan username dan password yang valid dalam header permintaan Anda.
 
-### Cara Mendapatkan Token JWT
+### Cara Mendapatkan Kredensial Basic Authentication
 
 Untuk mendapatkan kredensial, Anda perlu melakukan langkah-langkah berikut:
 
