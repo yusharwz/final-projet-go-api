@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func init() {
+	config.LoadEnvVariables()
+}
+
 func main() {
 
 	db, err := config.ConnectDb()
@@ -134,5 +138,5 @@ func main() {
 		}
 	}
 
-	r.Run(":8080")
+	r.Run()
 }
