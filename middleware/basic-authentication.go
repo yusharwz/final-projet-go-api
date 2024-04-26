@@ -16,14 +16,14 @@ func Auth(db *sql.DB) gin.HandlerFunc {
 		if !ok {
 			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
 			c.AbortWithStatus(http.StatusUnauthorized)
-			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Need authentication. Get your credentials on https://get-auth-api.yusharwz.my.id/"})
+			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Need authentication. Get your credentials on https://get-credential-api.yusharwz.my.id/"})
 			return
 		}
 
 		if !isValidCredentials(strings.ToLower(username), password, db) {
 			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
 			c.AbortWithStatus(http.StatusUnauthorized)
-			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Invalid credential. Get a valid credentials on https://get-auth-api.yusharwz.my.id/"})
+			c.JSON(http.StatusUnauthorized, gin.H{"Messege": "Invalid credential. Get a valid credentials on https://get-credential-api.yusharwz.my.id/"})
 			return
 		}
 		c.Next()
