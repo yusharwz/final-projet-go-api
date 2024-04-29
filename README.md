@@ -365,9 +365,9 @@ Request :
 
 ```json
 {
-	"nama_layanan": "string",
-  "satuan": "string",
-  "harga": int
+    "nama_layanan": "string",
+    "satuan": "string",
+    "harga": int
 }
 ```
 
