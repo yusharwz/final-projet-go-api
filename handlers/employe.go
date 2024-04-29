@@ -23,7 +23,7 @@ func ViewDataPegawai(c *gin.Context, db *sql.DB) {
 	var employees []entity.Pegawai
 	for rows.Next() {
 		var employe entity.Pegawai
-		err = rows.Scan(&employe.Id, &employe.Name)
+		err = rows.Scan(&employe.ID, &employe.Name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar pegawai"})
 			return
@@ -51,7 +51,7 @@ func ViewDataPegawaiById(c *gin.Context, db *sql.DB) {
 	var employees []entity.Pegawai
 	for rows.Next() {
 		var employe entity.Pegawai
-		err = rows.Scan(&employe.Id, &employe.Name)
+		err = rows.Scan(&employe.ID, &employe.Name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar pegawai"})
 			return
@@ -68,7 +68,7 @@ func ViewDataPegawaiById(c *gin.Context, db *sql.DB) {
 func AddPegawai(c *gin.Context, db *sql.DB) {
 	var employe entity.Pegawai
 	if err := c.ShouldBindJSON(&employe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gagal membaca body json"})
 		return
 	}
 
@@ -78,10 +78,10 @@ func AddPegawai(c *gin.Context, db *sql.DB) {
 
 	err := db.QueryRow(query, employe.Name).Scan(&employeId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal insert ke database"})
 		return
 	}
-	employe.Id = employeId
+	employe.ID = employeId
 	c.JSON(http.StatusCreated, employe)
 }
 
@@ -90,12 +90,12 @@ func UpdatePegawai(c *gin.Context, db *sql.DB) {
 
 	var employe entity.Pegawai
 	if err := c.ShouldBindJSON(&employe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gagal membaca body json"})
 		return
 	}
 
 	var existingEmploye entity.Pegawai
-	err := db.QueryRow("SELECT id, nama_pegawai FROM mst_pegawai WHERE id = $1", id).Scan(&existingEmploye.Id, &existingEmploye.Name)
+	err := db.QueryRow("SELECT id, nama_pegawai FROM mst_pegawai WHERE id = $1", id).Scan(&existingEmploye.ID, &existingEmploye.Name)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Pegawai dengan id tersebut tidak ditemukan"})
 		return
@@ -108,11 +108,11 @@ func UpdatePegawai(c *gin.Context, db *sql.DB) {
 	query := "UPDATE mst_pegawai SET nama_pegawai = $1 WHERE id = $2;"
 	_, err = db.Exec(query, employe.Name, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal update data ke database"})
 		return
 	}
 	intId, _ := strconv.Atoi(id)
-	employe.Id = intId
+	employe.ID = intId
 	c.JSON(http.StatusOK, employe)
 }
 
@@ -120,7 +120,7 @@ func DeletePegawai(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var existingEmploye entity.Pegawai
-	err := db.QueryRow("SELECT id FROM mst_pegawai WHERE id = $1", id).Scan(&existingEmploye.Id)
+	err := db.QueryRow("SELECT id FROM mst_pegawai WHERE id = $1", id).Scan(&existingEmploye.ID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Pegawai dengan id tersebut tidak ditemukan"})
 		return
@@ -129,7 +129,7 @@ func DeletePegawai(c *gin.Context, db *sql.DB) {
 	query := "DELETE FROM mst_pegawai WHERE id = $1;"
 	_, err = db.Exec(query, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal menghapus pegawai"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Pegawai berhasil dihapus"})

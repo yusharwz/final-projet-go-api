@@ -23,7 +23,7 @@ func ViewDataPelanggan(c *gin.Context, db *sql.DB) {
 	var customers []entity.Customers
 	for rows.Next() {
 		var customer entity.Customers
-		err = rows.Scan(&customer.Id, &customer.Name, &customer.NoHp)
+		err = rows.Scan(&customer.ID, &customer.Name, &customer.NoHp)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar pelanggan"})
 			return
@@ -52,7 +52,7 @@ func ViewDataPelangganById(c *gin.Context, db *sql.DB) {
 	var customers []entity.Customers
 	for rows.Next() {
 		var customer entity.Customers
-		err = rows.Scan(&customer.Id, &customer.Name, &customer.NoHp)
+		err = rows.Scan(&customer.ID, &customer.Name, &customer.NoHp)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mendapatkan daftar pelanggan"})
 			return
@@ -69,7 +69,7 @@ func ViewDataPelangganById(c *gin.Context, db *sql.DB) {
 func AddPelanggan(c *gin.Context, db *sql.DB) {
 	var customer entity.Customers
 	if err := c.ShouldBindJSON(&customer); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gagal membaca body json"})
 		return
 	}
 
@@ -79,10 +79,10 @@ func AddPelanggan(c *gin.Context, db *sql.DB) {
 
 	err := db.QueryRow(query, customer.Name, customer.NoHp).Scan(&customerId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal insert ke database"})
 		return
 	}
-	customer.Id = customerId
+	customer.ID = customerId
 	c.JSON(http.StatusCreated, customer)
 }
 
@@ -91,12 +91,12 @@ func UpdatePelanggan(c *gin.Context, db *sql.DB) {
 
 	var customer entity.Customers
 	if err := c.ShouldBindJSON(&customer); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gagal membaca body json"})
 		return
 	}
 
 	var existingCustomer entity.Customers
-	err := db.QueryRow("SELECT id, nama_pelanggan, nomor_hp FROM mst_pelanggan WHERE id = $1", id).Scan(&existingCustomer.Id, &existingCustomer.Name, &existingCustomer.NoHp)
+	err := db.QueryRow("SELECT id, nama_pelanggan, nomor_hp FROM mst_pelanggan WHERE id = $1", id).Scan(&existingCustomer.ID, &existingCustomer.Name, &existingCustomer.NoHp)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Pelanggan dengan id tersebut tidak ditemukan"})
 		return
@@ -113,11 +113,11 @@ func UpdatePelanggan(c *gin.Context, db *sql.DB) {
 	query := "UPDATE mst_pelanggan SET nama_pelanggan = $1, nomor_hp = $2 WHERE id = $3;"
 	_, err = db.Exec(query, customer.Name, customer.NoHp, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal update ke database"})
 		return
 	}
 	intId, _ := strconv.Atoi(id)
-	customer.Id = intId
+	customer.ID = intId
 	c.JSON(http.StatusOK, customer)
 }
 
@@ -125,7 +125,7 @@ func DeletePelanggan(c *gin.Context, db *sql.DB) {
 	id := c.Param("id")
 
 	var existingCustomer entity.Customers
-	err := db.QueryRow("SELECT id FROM mst_pelanggan WHERE id = $1", id).Scan(&existingCustomer.Id)
+	err := db.QueryRow("SELECT id FROM mst_pelanggan WHERE id = $1", id).Scan(&existingCustomer.ID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Pelanggan dengan id tersebut tidak ditemukan"})
 		return
@@ -134,7 +134,7 @@ func DeletePelanggan(c *gin.Context, db *sql.DB) {
 	query := "DELETE FROM mst_pelanggan WHERE id = $1;"
 	_, err = db.Exec(query, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal menghapus Pelanggan"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Pelanggan berhasil dihapus"})
