@@ -27,8 +27,8 @@ Request :
 
 ```json
 {
-  "Name": "string",
-  "NoHp": "string"
+  "name": "string",
+  "no_hp": "string"
 }
 ```
 
@@ -40,8 +40,8 @@ Response :
 ```json
 {
   "id": "string",
-  "Name": "string",
-  "NoHp": "string"
+  "name": "string",
+  "no_hp": "string"
 }
 ```
 
@@ -61,9 +61,9 @@ Response :
 
 ```json
 {
-  "Id": "string",
-  "Name": "string",
-  "NoHp": "string"
+  "id": "string",
+  "name": "string",
+  "no_hp": "string"
 }
 ```
 
@@ -80,8 +80,8 @@ Request :
 
 ```json
 {
-  "Name": "string",
-  "NoHp": "string"
+  "name": "string",
+  "no_hp": "string"
 }
 ```
 
@@ -92,10 +92,10 @@ Response :
 
 ```json
 {
- {
-    "Id": "string",
-    "Name": "string",
-    "NoHp": "string"
+  {
+    "id": "string",
+    "name": "string",
+    "no_hp": "string"
   }
 }
 ```
@@ -137,14 +137,14 @@ Request :
 
 ```json
 {
-  "IdPelanggan": int,
-  "IdPegawai":  int,
-  "TanggalKeluar": "stirng",
-  "StatusPembayaran": "string",
-  "DetailTransaksi": [
+  "id_pelanggan": int,
+  "id_pegawai":  int,
+  "tanggal_keluar": "stirng",
+  "status_pembayaran": "string",
+  "detail_transaksi": [
     {
-      "IdLayanan": int,
-      "Quantity": int
+      "id_layanan": int,
+      "quantity": int
     }
   ]
 }
@@ -159,18 +159,18 @@ Response :
 ```json
 {
     "transaksi": {
-        "Id": int,
-        "IdPelanggan": int,
-        "IdPegawai": int,
-        "TanggalMasuk": "string",
+        "id": int,
+        "id_pelanggan": int,
+        "id_pegawai":  int,
+        "tanggal_masuk": "string",
         "TanggalKeluar": "stirng",
-        "StatusPembayaran": "string",
-        "DetailTransaksi": [
+        "status_pembayaran": "string",
+        "detail_transaksi": [
             {
-                "Id": int,
-                "IdTransaksi": int,
-                "IdLayanan": int,
-                "Quantity": int
+                "id": int,
+                "id_transaksi": int,
+                "id_layanan": int,
+                "quantity": int
             }
         ]
     }
@@ -198,20 +198,20 @@ Response :
 {
     "Detail Transaksi": [
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         },
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         }
     ],
     "Total Pembayaran": int
@@ -239,20 +239,20 @@ Response :
 {
     "Detail Transaksi": [
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         },
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         }
     ],
     "Total Pembayaran": int
@@ -278,20 +278,20 @@ Response :
 {
     "Detail Transaksi": [
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         },
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         }
     ],
     "Total Pembayaran": int
@@ -323,28 +323,28 @@ Response :
 {
     "All Transaksi": [
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         },
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         },
         {
-            "NamaPelanggan": "string",
-            "NamaLayanan": "string",
-            "Quantity": int,
-            "NamaPegawai": "string",
-            "TanggalMasuk": "string",
-            "Harga": int
+            "nama_pelanggan": "string",
+            "nama_layanan": "string",
+            "quantity": int,
+            "nama_pegawai": "string",
+            "tanggal_masuk": "string",
+            "harga": int
         }
     ]
 }
@@ -365,9 +365,9 @@ Request :
 
 ```json
 {
-	"NamaLayanan": "string",
-  "Satuan": "string",
-  "Harga": int
+	"nama_layanan": "string",
+  "satuan": "string",
+  "harga": int
 }
 ```
 
@@ -378,10 +378,10 @@ Response :
 
 ```json
 {
-    "Id": int,
-    "NamaLayanan": "string",
-    "Satuan": "string",
-    "Harga": int
+    "id": int,
+    "nama_layanan": "string",
+    "satuan": "string",
+    "harga": int
 }
 ```
 
@@ -404,28 +404,28 @@ Response :
 ```json
 [
     {
-        "Id": int,
-        "NamaLayanan": "string",
-        "Satuan": "string",
-        "Harga": int
+        "id": int,
+        "nama_layanan": "string",
+        "satuan": "string",
+        "harga": int
     },
     {
-        "Id": int,
-        "NamaLayanan": "string",
-        "Satuan": "string",
-        "Harga": int
+        "id": int,
+        "nama_layanan": "string",
+        "satuan": "string",
+        "harga": int
     },
     {
-        "Id": int,
-        "NamaLayanan": "string",
-        "Satuan": "string",
-        "Harga": int
+        "id": int,
+        "nama_layanan": "string",
+        "satuan": "string",
+        "harga": int
     },
     {
-        "Id": int,
-        "NamaLayanan": "string",
-        "Satuan": "string",
-        "Harga": int
+        "id": int,
+        "nama_layanan": "string",
+        "satuan": "string",
+        "harga": int
     }
 ]
 ```
@@ -447,10 +447,10 @@ Response :
 ```json
 [
     {
-        "Id": int,
-        "NamaLayanan": "string",
-        "Satuan": "string",
-        "Harga": int
+        "id": int,
+        "nama_layanan": "string",
+        "satuan": "string",
+        "harga": int
     }
 ]
 ```
@@ -468,9 +468,9 @@ Request :
 
 ```json
 {
-    "NamaLayanan": "string",
-    "Satuan": "string",
-    "Harga": int
+    "nama_layanan": "string",
+    "satuan": "string",
+    "harga": int
 }
 ```
 
@@ -481,10 +481,10 @@ Response :
 
 ```json
 {
-    "Id": int,
-    "NamaLayanan": "string",
-    "Satuan": "string",
-    "Harga": int
+    "id": int,
+    "nama_layanan": "string",
+    "satuan": "string",
+    "harga": int
 }
 ```
 
@@ -535,8 +535,8 @@ Response :
 
 ```json
 {
-    "Id": int,
-    "Name": "string"
+    "id": int,
+    "name": "string"
 }
 ```
 
@@ -557,20 +557,20 @@ Response :
 ```json
 [
     {
-        "Id": int,
-        "Name": "string"
+        "id": int,
+        "name": "string"
     },
     {
-        "Id": int,
-        "Name": "string"
+        "id": int,
+        "name": "string"
     },
     {
-        "Id": int,
-        "Name": "string"
+        "id": int,
+        "name": "string"
     },
     {
-        "Id": int,
-        "Name": "string"
+        "id": int,
+        "name": "string"
     }
 ]
 ```
@@ -592,8 +592,8 @@ Response :
 ```json
 [
     {
-        "Id": int,
-        "Name": "string"
+        "id": int,
+        "name": "string"
     }
 ]
 ```
@@ -611,7 +611,7 @@ Request :
 
 ```json
 {
-  "Name": "string"
+  "name": "string"
 }
 ```
 
@@ -622,8 +622,8 @@ Response :
 
 ```json
 {
-    "Id": int,
-    "Name": "string"
+    "id": int,
+    "name": "string"
 }
 ```
 
