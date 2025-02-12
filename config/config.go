@@ -10,7 +10,7 @@ import (
 
 func ConnectDb() (db *sql.DB, err error) {
 
-	var PsqlInfo = "host=" + os.Getenv("DB_HOST") + " port=" + os.Getenv("DB_PORT") + " user=" + os.Getenv("DB_USER") + " password=" + os.Getenv("DB_PASSWORD") + " dbname=" + os.Getenv("DB_NAME") + " sslmode=disable"
+	var PsqlInfo = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&sslcert=%s&sslkey=%s&sslrootcert=%s", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"), os.Getenv("DB_SSL_MODE"), os.Getenv("CLIENT_CERT_PATH"), os.Getenv("CLIENT_KEY_PATH"), os.Getenv("SERVER_CA_PATH"))
 
 	db, err = sql.Open("postgres", PsqlInfo)
 	if err != nil {
