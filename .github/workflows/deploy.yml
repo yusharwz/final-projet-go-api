@@ -27,5 +27,5 @@ jobs:
             git reset --hard
             git pull origin master
             sudo systemctl restart open_api_golang
-            echo 'Deployment successful!'
+            echo 'deployment successful!'
           EOF
