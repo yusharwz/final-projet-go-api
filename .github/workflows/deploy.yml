@@ -1,33 +1,27 @@
-name: Deploy to VPS
+name: Deploy Golang App to VPS
 
 on:
   push:
     branches:
-      - master # Sesuaikan dengan branch utama Anda
+      - master # Ganti jika menggunakan branch lain
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup SSH
+      - name: Setup SSH and Deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
-      - name: Deploy to VPS
-        run: |
-          ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 2202 yusharwz@yusharwz.my.id << 'EOF'
-            set -x  # Menampilkan command yang dieksekusi
-            echo "Login berhasil ke VPS..."
+          ssh $SSH_USER@$SSH_HOST << 'EOF'
             cd /var/www/open_api_golang
             git reset --hard
             git pull origin master
             sudo systemctl restart open_api_golang
-            echo "Deployment successful!"
           EOF
