@@ -11,13 +11,13 @@ jobs:
 
     steps:
       - name: Ensure SSH Directory Exists
-        run: mkdir -p $HOME/.ssh && chmod 700 $HOME/.ssh
+        run: mkdir -p ~/.ssh && chmod 700 ~/.ssh
 
       - name: Add Private Key to SSH
-        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
       - name: Add Known Hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> $HOME/.ssh/known_hosts
+        run: ssh-keyscan -p 2202 -H yusharwz.my.id >> ~/.ssh/known_hosts
 
       - name: Test SSH Connection
         run: ssh -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo Connected !"
