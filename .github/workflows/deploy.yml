@@ -23,7 +23,8 @@ jobs:
       - name: Deploy to VPS
         run: |
           ssh -i ~/.ssh/id_rsa user@vps.example.com "
-            cd /var/www/myapp &&
+            cd /var/www/open_api_golang &&
+            git reset --hard &&
             git pull origin master &&
             sudo systemctl restart open_api_golang &&
             echo 'Deployment successful!'
