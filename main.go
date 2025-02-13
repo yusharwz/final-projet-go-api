@@ -6,10 +6,14 @@ import (
 	"api-enigma-laundry/middleware"
 	"api-enigma-laundry/pkg"
 	"fmt"
+	"io"
+	"log"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
+	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -17,6 +21,20 @@ func init() {
 }
 
 func main() {
+
+	logFile, err := os.OpenFile("/var/log/myapp/open_api.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal("Gagal membuat file log:", err)
+	}
+	defer logFile.Close()
+
+	// Konfigurasi Logrus
+	logrus.SetOutput(logFile)
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetLevel(logrus.InfoLevel)
+
+	// MultiWriter untuk menyimpan log ke file dan terminal
+	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
 
 	db, err := config.ConnectDb()
 	if err != nil {
