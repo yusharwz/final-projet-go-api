@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -i ~/.ssh/id_rsa user@vps.example.com "
+          ssh -i ~/.ssh/id_rsa yusharwz@yusharwz.my.id "
             cd /var/www/open_api_golang &&
             git reset --hard &&
             git pull origin master &&
