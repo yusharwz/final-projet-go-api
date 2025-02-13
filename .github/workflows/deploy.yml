@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master # Gantilah sesuai branch utama Anda
+      - master # Sesuaikan dengan branch utama Anda
 
 jobs:
   deploy:
@@ -22,10 +22,10 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -i ~/.ssh/id_rsa -p 2202 yusharwz@157.15.125.92 "
-            cd /var/www/open_api_golang &&
-            git reset --hard &&
-            git pull origin master &&
-            sudo systemctl restart open_api_golang &&
+          ssh -i ~/.ssh/id_rsa -p 2202 yusharwz@yusharwz.my.id << 'EOF'
+            cd /var/www/open_api_golang
+            git reset --hard
+            git pull origin master
+            sudo systemctl restart open_api_golang
             echo 'Deployment successful!'
-          "
+          EOF
