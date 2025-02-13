@@ -22,10 +22,12 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -vvv -i ~/.ssh/id_rsa -p 2202 yusharwz@yusharwz.my.id << 'EOF'
-             cd /var/www/open_api_golang
-             git reset --hard
-             git pull origin master
-             sudo systemctl restart open_api_golang
-             echo 'Deployment successful!'
+          ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 2202 yusharwz@yusharwz.my.id << 'EOF'
+            set -x  # Menampilkan command yang dieksekusi
+            echo "Login berhasil ke VPS..."
+            cd /var/www/open_api_golang
+            git reset --hard
+            git pull origin master
+            sudo systemctl restart open_api_golang
+            echo "Deployment successful!"
           EOF
