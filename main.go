@@ -4,8 +4,12 @@ import (
 	"api-enigma-laundry/config"
 	"api-enigma-laundry/handlers"
 	"api-enigma-laundry/middleware"
+	"api-enigma-laundry/pkg"
+	"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/robfig/cron/v3"
 )
 
 func init() {
@@ -19,6 +23,16 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
+
+	c := cron.New(cron.WithLocation(time.FixedZone("Asia/Jakarta", 7*60*60))) // Waktu zona Asia/Jakarta (UTC+7)
+	_, err = c.AddFunc("0 0 * * *", func() {
+		pkg.Reset(db)
+	})
+	if err != nil {
+		fmt.Println("Error adding cron job:", err)
+		return
+	}
+	c.Start()
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
