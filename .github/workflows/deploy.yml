@@ -17,7 +17,7 @@ jobs:
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
       - name: Add Known Hosts
-        run: ssh-keyscan -p 2202 -H yusharwz.my.id >> ~/.ssh/known_hosts
+        run: ssh-keyscan -p 2202 yusharwz.my.id > ~/.ssh/known_hosts
 
       - name: Test SSH Connection
         run: ssh -i ~/.ssh/id_rsa -p 2202 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo Connected !"
