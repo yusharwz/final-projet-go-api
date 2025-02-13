@@ -20,4 +20,7 @@ jobs:
         run: ssh-keyscan -p 2202 -H yusharwz.my.id >> ~/.ssh/known_hosts
 
       - name: Test SSH Connection
-        run: ssh -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo Connected !"
+        run: ssh -i ~/.ssh/id_rsa -p 2202 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo Connected !"
+
+      - name: Deployment Steps
+        run: echo "Deploying application..."
