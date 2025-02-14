@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.VPS_IP }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: 2202
           script: |
             # Navigasi ke direktori proyek
             cd /var/www/open_api_golang
