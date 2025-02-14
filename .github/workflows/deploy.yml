@@ -37,18 +37,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2202
           script: |
-            # Navigasi ke direktori proyek
             cd /var/www/open_api_golang
-
-            # Reset perubahan lokal dan tarik kode terbaru dari GitHub
             git reset --hard
             git pull origin master
-
-            # Update dependensi dan build ulang aplikasi
             go mod tidy
-
-            # Restart service menggunakan systemd
             sudo systemctl restart open_api_golang
+            # Notify successful deployment
+            echo "Deployment completed successfully."
 
       - name: Update deployment status (success)
         if: success()
