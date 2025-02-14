@@ -3,12 +3,11 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master # Sesuaikan dengan branch yang ingin di-deploy
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -23,11 +22,6 @@ jobs:
         run: |
           ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to VPS
+      - name: Test SSH Connection
         run: |
-          ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-            cd /var/www/open_api_golang 
-            git pull origin master
-            go mod tidy
-            sudo systemctl restart open_api_golang
-          EOF
+          ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo 'SSH Connected Successfully'"
