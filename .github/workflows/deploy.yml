@@ -1,4 +1,4 @@
-name: Application Deployment
+name: App Deployment
 
 on:
   push:
@@ -37,20 +37,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2202
           script: |
-            set -e
-            echo "Starting deployment..."
+            # Navigasi ke direktori proyek
             cd /var/www/open_api_golang
-            echo "Resetting git repository..."
+
+            # Reset perubahan lokal dan tarik kode terbaru dari GitHub
             git reset --hard
-            echo "Pulling latest changes..."
             git pull origin master
-            echo "Installing dependencies..."
-            go mod tidy
-            echo "Restarting service..."
+
+            # Restart service menggunakan systemd
             sudo systemctl restart open_api_golang
-            echo "Checking service status..."
-            sudo systemctl status open_api_golang
-            echo "Deployment completed successfully."
 
       - name: Update deployment status (success)
         if: success()
