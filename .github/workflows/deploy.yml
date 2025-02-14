@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Auto Deploy in VPS after Push in Production
 
 on:
   push:
@@ -7,21 +7,63 @@ on:
 
 jobs:
   deploy:
+    name: Deploy Golang API with Nginx
+    permissions:
+      deployments: write
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: "actions/checkout@v2"
+        with:
+          ref: master
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      - name: Create GitHub Deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          environment: production
 
-      - name: Add VPS to Known Hosts
-        run: |
-          ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+      - name: Set up SSH Key and Deploy to VPS
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Navigasi ke direktori proyek
+            cd /var/www/open_api_golang
 
-      - name: Test SSH Connection
-        run: |
-          ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo 'SSH Connected Successfully'"
+            # Reset perubahan lokal dan tarik kode terbaru dari GitHub
+            git reset --hard
+            git pull origin master
+
+            # Update dependensi dan build ulang aplikasi
+            go mod tidy
+
+            # Restart service menggunakan systemd
+            sudo systemctl restart open_api_golang
+
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          state: "success"
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          state: "failure"
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
