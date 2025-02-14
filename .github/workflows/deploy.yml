@@ -1,4 +1,4 @@
-name: Deploy Golang App to VPS
+name: App Deployment
 
 on:
   push:
@@ -7,35 +7,60 @@ on:
 
 jobs:
   deploy:
+    name: Deploy Golang API
+    permissions:
+      deployments: write
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup SSH and Deploy
+      - name: Checkout Repository
+        uses: "actions/checkout@v2"
+        with:
+          ref: master
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
+      - name: Create GitHub Deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          environment: production
+
+      - name: Set up SSH Key and Deploy to VPS
+        uses: appleboy/ssh-action@master
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PORT: 2202 # Sesuaikan dengan port SSH di server
-
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-          # Pastikan SSH_HOST di-set
-          if [[ -z "$SSH_HOST" ]]; then echo "Error: SSH_HOST is not set"; exit 1; fi
-
-          # Tambahkan host ke known_hosts
-          ssh-keyscan -H "$SSH_HOST" 2>/dev/null >> ~/.ssh/known_hosts || echo "Failed to add known_hosts"
-
-          # Debugging: Lihat apakah SSH bisa connect
-          echo "Connecting to SSH: $SSH_USER@$SSH_HOST on port $SSH_PORT"
-          ssh -v -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "echo 'SSH connected!'"
-
-          # Jika berhasil, lanjutkan deployment
-          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 2202
+          script: |
+            # Navigasi ke direktori proyek
             cd /var/www/open_api_golang
+
+            # Reset perubahan lokal dan tarik kode terbaru dari GitHub
             git reset --hard
             git pull origin master
+
+            # Restart service menggunakan systemd
             sudo systemctl restart open_api_golang
-          EOF
+
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          state: "success"
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          state: "failure"
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
