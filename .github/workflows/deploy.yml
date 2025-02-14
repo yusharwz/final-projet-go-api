@@ -37,13 +37,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2202
           script: |
-            cd /var/www/open_api_golang
-            git reset --hard
-            git pull origin master
-            go mod tidy
-            sudo systemctl restart open_api_golang
+            cd /var/www/open_api_golang | tee /dev/tty
+            git reset --hard | tee /dev/tty
+            git pull origin master | tee /dev/tty
+            go mod tidy | tee /dev/tty
+            sudo systemctl restart open_api_golang | tee /dev/tty
             # Notify successful deployment
-            echo "Deployment completed successfully."
+            echo "Deployment completed successfully." | tee /dev/tty
 
       - name: Update deployment status (success)
         if: success()
