@@ -44,7 +44,7 @@ jobs:
             git reset --hard
             git pull origin master
 
-            # Restart service menggunakan systemd
+            # Restart service dan build ulang project menggunakan systemd
             sudo systemctl restart open_api_golang
 
       - name: Update deployment status (success)
