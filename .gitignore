@@ -1,3 +1,2 @@
-.gitignore
 .env
-api-enigma-laundry.exe
+*.exe

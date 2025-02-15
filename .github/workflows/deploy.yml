@@ -43,9 +43,14 @@ jobs:
             # Reset perubahan lokal dan tarik kode terbaru dari GitHub
             git reset --hard
             git pull origin master
+            git add .
+            git commit -m "Deploy from GitHub Actions"
+
+            # Push changes to the origin
+            git push origin master
 
             # Restart service dan build ulang project menggunakan systemd
-            sudo systemctl restart open_api_golang
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S systemctl restart open_api_golang
 
       - name: Update deployment status (success)
         if: success()
