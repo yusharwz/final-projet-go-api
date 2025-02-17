@@ -22,7 +22,19 @@ func init() {
 
 func main() {
 
-	logFile, err := os.OpenFile("./log/app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// Get current working directory
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal("Failed to get current directory:", err)
+	}
+
+	// Ensure log directory exists
+	logDir := currentDir + "/log"
+	if err := os.MkdirAll(logDir, 0755); err != nil {
+		log.Fatal("Failed to create log directory:", err)
+	}
+
+	logFile, err := os.OpenFile(logDir+"/app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal("Gagal membuat file log:", err)
 	}
