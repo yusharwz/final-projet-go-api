@@ -6,14 +6,17 @@ import (
 	"api-enigma-laundry/middleware"
 	"api-enigma-laundry/pkg"
 	"fmt"
-	"io"
-	"log"
 	"os"
 	"time"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/natefinch/lumberjack"
 	"github.com/robfig/cron/v3"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 )
 
 func init() {
@@ -22,34 +25,67 @@ func init() {
 
 func main() {
 
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.Default()
+
+	// Setup CORS
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins: false,
+		AllowOrigins:    []string{"*"},
+		AllowMethods:    []string{"GET", "POST", "PUT", "OPTIONS", "DELETE"},
+		AllowHeaders: []string{
+			"Origin", "Content-Type",
+			"Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           120 * time.Second,
+	}))
+
 	// Get current working directory
 	currentDir, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Failed to get current directory:", err)
+		log.Error().Msg("Failed to get current working directory")
 	}
 
 	// Ensure log directory exists
 	logDir := currentDir + "/log"
 	if err := os.MkdirAll(logDir, 0755); err != nil {
-		log.Fatal("Failed to create log directory:", err)
+		log.Error().Msg("Failed to create log directory")
 	}
 
-	logFile, err := os.OpenFile(logDir+"/app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal("Gagal membuat file log:", err)
+	// Konfigurasi Zerolog
+	zerolog.TimeFieldFormat = "02-01-2006 15:04:05"
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+
+	// Konfigurasi logger untuk menulis ke file
+	logFile := &lumberjack.Logger{
+		Filename:   logDir + "/app.log",
+		MaxSize:    10, // dalam MB
+		MaxBackups: 30,
+		MaxAge:     7, // dalam hari
+		Compress:   true,
 	}
 	defer logFile.Close()
 
-	// Konfigurasi Logrus
-	logrus.SetOutput(logFile)
-	logrus.SetFormatter(&logrus.JSONFormatter{})
-	logrus.SetLevel(logrus.InfoLevel)
+	gin.DefaultWriter = logFile
 
-	// MultiWriter untuk menyimpan log ke file dan terminal
-	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
+	r.Use(gin.Logger())
+
+	// Set output logger ke stdout dan Loki
+	log.Logger = log.Output(zerolog.MultiLevelWriter(os.Stdout, logFile))
+
+	r.Use(logger.SetLogger(
+		logger.WithLogger(func(_ *gin.Context, l zerolog.Logger) zerolog.Logger {
+			return l.Output(os.Stdout).With().Caller().Logger()
+		}),
+	))
+
+	r.Use(gin.Recovery())
 
 	db, err := config.ConnectDb()
 	if err != nil {
+		log.Error().Msg("Database connection failed")
 		panic(err)
 	}
 	defer db.Close()
@@ -64,8 +100,6 @@ func main() {
 	}
 	c.Start()
 
-	gin.SetMode(gin.ReleaseMode)
-	r := gin.Default()
 	r.Use(middleware.Auth(db))
 
 	groupApi := r.Group("/api")
