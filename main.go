@@ -56,7 +56,7 @@ func main() {
 	// Konfigurasi Zerolog
 	zerolog.TimeFieldFormat = "02-01-2006 15:04:05"
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-	zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
 	// Konfigurasi logger untuk menulis ke file
 	logFile := &lumberjack.Logger{
