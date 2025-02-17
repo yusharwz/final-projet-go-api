@@ -90,6 +90,11 @@ func main() {
 	}
 	defer db.Close()
 
+	// Connection Pool
+	db.SetMaxOpenConns(1000)
+	db.SetMaxIdleConns(50)
+	db.SetConnMaxLifetime(5 * time.Minute)
+
 	c := cron.New(cron.WithLocation(time.FixedZone("Asia/Jakarta", 7*60*60))) // Waktu zona Asia/Jakarta (UTC+7)
 	_, err = c.AddFunc("0 0 * * *", func() {
 		pkg.Reset(db)
